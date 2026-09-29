@@ -28,7 +28,7 @@ Many bodaboda riders and owners keep no proper records. Money comes in through m
 
 | Login | Dashboard |
 |-------|-----------|
-| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) |
+| ![Login](login.png) | ![Dashboard](dashboard.png) |
 
 ## How to Run It Locally
 
