@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% set active = 'riders' %}
+{% block title %}Riders{% endblock %}
+{% block page_title %}Manage Riders{% endblock %}
+{% block content %}
+
+<div class="section-card">
+  <h3>All Riders ({{ riders|length }})</h3>
+  <table>
+    <thead><tr><th>Name</th><th>Phone</th><th>Motorbike</th><th>Status</th><th>Net Profit</th><th></th></tr></thead>
+    <tbody>
+      {% if not riders %}
+        <tr><td colspan="6" class="empty">No riders registered yet.</td></tr>
+      {% endif %}
+      {% for r in riders %}
+      <tr>
+        <td><a href="{{ url_for('admin.rider_detail', rider_id=r.id) }}" style="color:var(--green-main);font-weight:600;">{{ r.name }}</a></td>
+        <td>{{ r.phone }}</td>
+        <td>{{ r.motorbike_reg or '—' }}</td>
+        <td><span class="badge {{ 'active' if r.is_active_account else 'inactive' }}">{{ 'Active' if r.is_active_account else 'Disabled' }}</span></td>
+        <td style="font-weight:600;">{{ "%.0f"|format(r.net_profit()) }}</td>
+        <td style="display:flex; gap:6px;">
+          <a href="{{ url_for('admin.rider_detail', rider_id=r.id) }}" class="btn-sm blue">View</a>
+          <form method="POST" action="{{ url_for('admin.toggle_rider', rider_id=r.id) }}">
+            <button type="submit" class="btn-sm {{ 'red' if r.is_active_account else 'green' }}">{{ 'Disable' if r.is_active_account else 'Enable' }}</button>
+          </form>
+          <form method="POST" action="{{ url_for('admin.delete_rider', rider_id=r.id) }}" onsubmit="return confirm('Permanently remove this rider and all their records?');">
+            <button type="submit" class="btn-sm red">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

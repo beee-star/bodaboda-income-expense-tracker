@@ -1,0 +1,49 @@
+{% extends "rider/base.html" %}
+{% set active = 'income' %}
+{% block title %}Income{% endblock %}
+{% block page_title %}Income{% endblock %}
+{% block content %}
+
+<div class="section-card">
+  <h3>Record New Income</h3>
+  <form method="POST" class="inline-form">
+    <div>
+      <label>Date</label>
+      <input type="date" name="date" value="{{ now }}" required>
+    </div>
+    <div>
+      <label>Amount (KES)</label>
+      <input type="number" name="amount" min="1" step="0.01" placeholder="e.g. 500" required>
+    </div>
+    <div style="grid-column: span 2;">
+      <label>Description</label>
+      <input type="text" name="description" placeholder="e.g. Ride to town">
+    </div>
+    <button type="submit" class="btn-green" style="height:38px;">Save</button>
+  </form>
+</div>
+
+<div class="section-card">
+  <h3>Income History</h3>
+  <table>
+    <thead><tr><th>Date</th><th>Description</th><th style="text-align:right;">Amount</th><th></th></tr></thead>
+    <tbody>
+      {% if not entries %}
+        <tr><td colspan="4" class="empty">No income recorded yet.</td></tr>
+      {% endif %}
+      {% for x in entries %}
+      <tr>
+        <td>{{ x.date.strftime('%Y-%m-%d') }}</td>
+        <td>{{ x.description }}</td>
+        <td style="text-align:right;font-weight:600;color:var(--green-main)">{{ "%.0f"|format(x.amount) }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('rider.delete_income', income_id=x.id) }}" style="display:inline;" onsubmit="return confirm('Delete this entry?');">
+            <button type="submit" class="del-link" title="Delete">🗑</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

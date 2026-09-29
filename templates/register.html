@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register · Bodaboda Tracker</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-left">
+      <div class="moto-icon">🏍️</div>
+      <div class="brand-title">Bodaboda<span>Tracker</span></div>
+      <div class="brand-sub">Create your rider account in seconds. No approval needed — start tracking today.</div>
+    </div>
+    <div class="auth-right">
+      <h2>Create rider account</h2>
+      <p class="sub">Fill in your details below</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div>
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" class="form-group">
+        <div class="input-wrap">
+          <span class="ico">👤</span>
+          <input type="text" name="name" placeholder="Full name" required>
+        </div>
+        <div class="input-wrap">
+          <span class="ico">📱</span>
+          <input type="text" name="phone" placeholder="Phone number" required>
+        </div>
+        <div class="input-wrap">
+          <span class="ico">✉️</span>
+          <input type="email" name="email" placeholder="Email (optional)">
+        </div>
+        <div class="input-wrap">
+          <span class="ico">🏍️</span>
+          <input type="text" name="motorbike_reg" placeholder="Motorbike registration no. (optional)">
+        </div>
+        <div class="input-wrap">
+          <span class="ico">🔒</span>
+          <input type="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="input-wrap">
+          <span class="ico">🔒</span>
+          <input type="password" name="confirm_password" placeholder="Confirm password" required>
+        </div>
+        <button type="submit" class="btn-green">Create Account</button>
+      </form>
+      <div class="auth-link">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

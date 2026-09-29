@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% set active = 'dashboard' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+{% block content %}
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-icon profit">🏍️</div>
+    <div><div class="stat-label">Registered Riders</div><div class="stat-value blue">{{ total_riders }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon income">💰</div>
+    <div><div class="stat-label">Total Income (all riders)</div><div class="stat-value green">{{ "%.0f"|format(total_income) }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon expense">💸</div>
+    <div><div class="stat-label">Total Expenses (all riders)</div><div class="stat-value red">{{ "%.0f"|format(total_expense) }}</div></div>
+  </div>
+</div>
+
+<div class="section-card">
+  <h3>Top Performing Riders</h3>
+  <table>
+    <thead><tr><th>Rider</th><th>Phone</th><th style="text-align:right;">Income</th><th style="text-align:right;">Expenses</th><th style="text-align:right;">Net Profit</th></tr></thead>
+    <tbody>
+      {% if not top_riders %}
+        <tr><td colspan="5" class="empty">No riders registered yet.</td></tr>
+      {% endif %}
+      {% for r in top_riders %}
+      <tr>
+        <td>{{ r.name }}</td>
+        <td>{{ r.phone }}</td>
+        <td style="text-align:right;color:var(--green-main);font-weight:600;">{{ "%.0f"|format(r.total_income()) }}</td>
+        <td style="text-align:right;color:var(--red-main);font-weight:600;">{{ "%.0f"|format(r.total_expense()) }}</td>
+        <td style="text-align:right;font-weight:700;">{{ "%.0f"|format(r.net_profit()) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

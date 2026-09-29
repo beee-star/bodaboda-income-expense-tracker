@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Rider{% endblock %} · Bodaboda Tracker</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="shell">
+  <div class="sidebar">
+    <div class="sidebar-brand">Bodaboda<span>Tracker</span></div>
+    <div class="sidebar-nav">
+      <a class="nav-item {{ 'active' if active=='dashboard' else '' }}" href="{{ url_for('rider.dashboard') }}"><span class="ni">📊</span> Dashboard</a>
+      <a class="nav-item {{ 'active' if active=='income' else '' }}" href="{{ url_for('rider.income') }}"><span class="ni">💰</span> Income</a>
+      <a class="nav-item {{ 'active' if active=='expenses' else '' }}" href="{{ url_for('rider.expenses') }}"><span class="ni">💸</span> Expenses</a>
+      <a class="nav-item {{ 'active' if active=='reports' else '' }}" href="{{ url_for('rider.reports') }}"><span class="ni">📈</span> Reports</a>
+      <a class="nav-item {{ 'active' if active=='profile' else '' }}" href="{{ url_for('rider.profile') }}"><span class="ni">👤</span> Profile</a>
+    </div>
+    <div class="sidebar-footer">
+      <a class="nav-logout" href="{{ url_for('auth.logout') }}"><span class="ni">⏻</span> Logout</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+      <div class="user-pill">
+        <span class="role-badge">Rider</span>
+        <div class="user-avatar">{{ current_user.initials }}</div>
+        <span>{{ current_user.name }}</span>
+      </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="page">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

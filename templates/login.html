@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login · Bodaboda Tracker</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-left">
+      <div class="moto-icon">🏍️</div>
+      <div class="brand-title">Bodaboda<span>Tracker</span></div>
+      <div class="brand-sub">Track your daily income, expenses and profit — built for riders.</div>
+    </div>
+    <div class="auth-right">
+      <h2>Welcome back</h2>
+      <p class="sub">Log in to your account</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div>
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" class="form-group">
+        <div class="input-wrap">
+          <span class="ico">👤</span>
+          <input type="text" name="identifier" placeholder="Username or phone number" required>
+        </div>
+        <div class="input-wrap">
+          <span class="ico">🔒</span>
+          <input type="password" name="password" id="password" placeholder="Password" required>
+          <span class="toggle-password" id="togglePassword" style="cursor:pointer; font-size:0.8rem; color:var(--green-main); font-weight:600; flex-shrink:0;">Show</span>
+        </div>
+        <button type="submit" class="btn-green">Log In</button>
+      </form>
+      <div class="auth-link">Don't have an account? <a href="{{ url_for('auth.register') }}">Register as a rider</a></div>
+      <div class="auth-link" style="font-size:0.75rem;color:#999;">Admin? Use the admin username/phone provided to you.</div>
+</div>
+<script>
+  const togglePassword = document.getElementById('togglePassword');
+  const passwordField = document.getElementById('password');
+
+  togglePassword.addEventListener('click', () => {
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      togglePassword.textContent = 'Hide';
+    } else {
+      passwordField.type = 'password';
+      togglePassword.textContent = 'Show';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{% extends "rider/base.html" %}
+{% set active = 'reports' %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}Reports{% endblock %}
+{% block content %}
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-icon income">💰</div>
+    <div><div class="stat-label">Total Income</div><div class="stat-value green">{{ "%.0f"|format(total_income) }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon expense">💸</div>
+    <div><div class="stat-label">Total Expenses</div><div class="stat-value red">{{ "%.0f"|format(total_expense) }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon profit">📈</div>
+    <div><div class="stat-label">Net Profit</div><div class="stat-value {{ 'green' if profit >= 0 else 'red' }}">{{ "%.0f"|format(profit) }}</div></div>
+  </div>
+</div>
+
+<div class="section-card">
+  <h3>Income vs Expenses — Last 6 Months</h3>
+  <style>
+    .report-chart .bar { width: 18px; border-radius: 3px 3px 0 0; }
+    .report-chart .bar.inc { background: #2d8a4e; }
+    .report-chart .bar.exp { background: #c0392b; }
+  </style>
+  {% set max_v = namespace(val=1) %}
+  {% for m in months %}
+    {% if m.income > max_v.val %}{% set max_v.val = m.income %}{% endif %}
+    {% if m.expense > max_v.val %}{% set max_v.val = m.expense %}{% endif %}
+  {% endfor %}
+  <div class="report-chart" style="display:flex; align-items:flex-end; gap:16px; height:160px; border-bottom:2px solid #eee; padding-bottom:8px; margin-bottom:8px;">
+    {% for m in months %}
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex:1;">
+      {% set inc_h = ((m.income / max_v.val) * 140)|round|int %}
+      {% set exp_h = ((m.expense / max_v.val) * 140)|round|int %}
+      {% set inc_height = inc_h if inc_h > 1 else 1 %}
+      {% set exp_height = exp_h if exp_h > 1 else 1 %}
+      <div style="display:flex; align-items:flex-end; gap:3px; height:140px;">
+        <div class="bar inc" data-height="{{ inc_height }}" title="Income: {{ m.income }}"></div>
+        <div class="bar exp" data-height="{{ exp_height }}" title="Expense: {{ m.expense }}"></div>
+      </div>
+      <div style="font-size:0.75rem; color:#888;">{{ m.label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="legend">
+    <span><span class="dot inc"></span> Income</span>
+    <span><span class="dot exp"></span> Expense</span>
+  </div>
+  <script>
+    document.querySelectorAll('.report-chart .bar[data-height]').forEach(function(bar) {
+      var height = parseInt(bar.dataset.height, 10);
+      if (isNaN(height) || height < 1) {
+        height = 1;
+      }
+      bar.style.height = height + 'px';
+    });
+  </script>
+</div>
+<div class="section-card">
+  <h3>All Transactions</h3>
+  <table>
+    <thead><tr><th>Date</th><th>Type</th><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
+    <tbody>
+      {% if not all_entries %}
+        <tr><td colspan="4" class="empty">No transactions yet.</td></tr>
+      {% endif %}
+      {% for x in all_entries %}
+      <tr>
+        <td>{{ x.date.strftime('%Y-%m-%d') }}</td>
+        <td><span class="badge {{ x.type }}">{{ 'Income' if x.type=='income' else 'Expense' }}</span></td>
+        <td>{{ x.description or x.category or '' }}</td>
+        <td class="{{ 'green' if x.type == 'income' else 'red' }}" style="text-align:right;font-weight:600;">{{ "%.0f"|format(x.amount) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
